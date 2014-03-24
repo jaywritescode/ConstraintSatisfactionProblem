@@ -1,8 +1,8 @@
+import csp
+
 __author__ = 'jayharris'
 
-from csp import *
-
-from collections import deque, Counter
+from collections import Counter
 
 
 class WordSquare:
@@ -26,7 +26,7 @@ class WordSquare:
         return WordSquareCSP(self, size, diag)
 
 
-class WordSquareCSP(ConstraintSatisfactionProblem):
+class WordSquareCSP(csp.ConstraintSatisfactionProblem):
 
     def __init__(self, wordsquare, size, diag):
         """
@@ -71,7 +71,7 @@ class WordSquareCSP(ConstraintSatisfactionProblem):
                 print("")
 
 
-class WordSquareVariable(BaseVariable):
+class WordSquareVariable(csp.BaseVariable):
     """
     A variable in the word square CSP.
 
@@ -89,7 +89,7 @@ class WordSquareVariable(BaseVariable):
         this variable. Should be retrieved via `self.get_neighbors()`.
     """
     def __init__(self, csp, name):
-        BaseVariable.__init__(self, csp, name)
+        csp.BaseVariable.__init__(self, csp, name)
         self.domain = WordSquare.alphabet[:]
 
     def ordered_domain(self):
@@ -119,7 +119,7 @@ class WordSquareVariable(BaseVariable):
         return None
 
 
-class WordSquareConstraint(BaseConstraint):
+class WordSquareConstraint(csp.BaseConstraint):
     """
     A constraint in the word square CSP. The constraint is of the form
     [V_0 = d_0, V_1 = d_1, ..., V_n = d_n] and is satisfied if there's a
@@ -143,7 +143,7 @@ class WordSquareConstraint(BaseConstraint):
         Arguments:
         variables -- a set of variables this constraint covers
         """
-        BaseConstraint.__init__(self, sorted(iter(variables), key=WordSquareVariable.get_name))
+        csp.BaseConstraint.__init__(self, sorted(iter(variables), key=WordSquareVariable.get_name))
         self.indices = {self.variables[i].name: i for i in range(len(self.variables))}
 
     def is_satisfiable(self, variable, assignment):
