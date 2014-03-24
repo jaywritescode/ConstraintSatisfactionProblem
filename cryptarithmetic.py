@@ -1,12 +1,12 @@
-import csp
-
 __author__ = 'Jay Harris'
+
+from csp import *
 
 import itertools
 import re
 
 
-class Cryptarithmetic(csp.ConstraintSatisfactionProblem):
+class Cryptarithmetic(ConstraintSatisfactionProblem):
     """
     Technically, it's a cryptarithmetic solver.
     """
@@ -17,7 +17,7 @@ class Cryptarithmetic(csp.ConstraintSatisfactionProblem):
         Args:
           puzzle (str): a cryptarithmetic with two addends and a sum
         """
-        csp.ConstraintSatisfactionProblem.__init__(self)
+        ConstraintSatisfactionProblem.__init__(self)
 
         # Extract the words from the puzzle.
         self.puzzle = puzzle
@@ -64,14 +64,14 @@ class Cryptarithmetic(csp.ConstraintSatisfactionProblem):
 class InvalidPuzzleException(Exception): pass
 
 
-class CryptarithmeticVariable(csp.BaseVariable):
+class CryptarithmeticVariable(BaseVariable):
 
     def __init__(self, csp, name, aux=False):
-        csp.BaseVariable.__init__(self, csp, name, aux)
+        BaseVariable.__init__(self, csp, name, aux)
         self.domain = set(range(10)) if not self.aux else set(range(2))
 
 
-class SumConstraint(csp.BaseConstraint):
+class SumConstraint(BaseConstraint):
     """
     A constraint of the form aux_n + A + B = C + 10 ** (aux_n+1)
     """
@@ -85,7 +85,7 @@ class SumConstraint(csp.BaseConstraint):
             right_vars (list of Variable): the variable on the right side
             of the constraint equation
         """
-        csp.BaseConstraint.__init__(self, left_vars + right_vars)
+        BaseConstraint.__init__(self, left_vars + right_vars)
         self.left_vars = left_vars
         self.right_vars = right_vars
 
@@ -120,9 +120,9 @@ class SumConstraint(csp.BaseConstraint):
             "%s %s" % (self.right_vars[0].name, '+ 10 * ' + self.right_vars[1].name if len(self.right_vars) == 2 else ''))
 
 
-class AllDifferentConstraint(csp.BaseConstraint):
+class AllDifferentConstraint(BaseConstraint):
     def __init__(self, variables):
-        csp.BaseConstraint.__init__(self, variables)
+        BaseConstraint.__init__(self, variables)
 
     def is_satisfiable(self, variable, assignment):
         if variable.value is not None:

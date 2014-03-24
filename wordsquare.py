@@ -1,6 +1,6 @@
-import csp
-
 __author__ = 'jayharris'
+
+from csp import *
 
 from collections import Counter
 
@@ -26,7 +26,7 @@ class WordSquare:
         return WordSquareCSP(self, size, diag)
 
 
-class WordSquareCSP(csp.ConstraintSatisfactionProblem):
+class WordSquareCSP(ConstraintSatisfactionProblem):
 
     def __init__(self, wordsquare, size, diag):
         """
@@ -38,6 +38,7 @@ class WordSquareCSP(csp.ConstraintSatisfactionProblem):
         diag -- True if the CSP has a diagonal constraint, otherwise
             False
         """
+        ConstraintSatisfactionProblem.__init__(self)
         self.size = size
 
         self.letters_count = Counter()
@@ -71,7 +72,7 @@ class WordSquareCSP(csp.ConstraintSatisfactionProblem):
                 print("")
 
 
-class WordSquareVariable(csp.BaseVariable):
+class WordSquareVariable(BaseVariable):
     """
     A variable in the word square CSP.
 
@@ -89,7 +90,7 @@ class WordSquareVariable(csp.BaseVariable):
         this variable. Should be retrieved via `self.get_neighbors()`.
     """
     def __init__(self, csp, name):
-        csp.BaseVariable.__init__(self, csp, name)
+        BaseVariable.__init__(self, csp, name)
         self.domain = WordSquare.alphabet[:]
 
     def ordered_domain(self):
@@ -119,7 +120,7 @@ class WordSquareVariable(csp.BaseVariable):
         return None
 
 
-class WordSquareConstraint(csp.BaseConstraint):
+class WordSquareConstraint(BaseConstraint):
     """
     A constraint in the word square CSP. The constraint is of the form
     [V_0 = d_0, V_1 = d_1, ..., V_n = d_n] and is satisfied if there's a
@@ -143,7 +144,7 @@ class WordSquareConstraint(csp.BaseConstraint):
         Arguments:
         variables -- a set of variables this constraint covers
         """
-        csp.BaseConstraint.__init__(self, sorted(iter(variables), key=WordSquareVariable.get_name))
+        BaseConstraint.__init__(self, sorted(iter(variables), key=WordSquareVariable.get_name))
         self.indices = {self.variables[i].name: i for i in range(len(self.variables))}
 
     def is_satisfiable(self, variable, assignment):
