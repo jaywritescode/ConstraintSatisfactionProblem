@@ -84,10 +84,6 @@ class WordSquareVariable(BaseVariable):
         the problem
     value -- the letter assigned to this variable, or None
     constraints -- a set of constraints covering this variable
-
-    Unpublished instance variables:
-    neighbors -- a set of variables that share at least one constraint with
-        this variable. Should be retrieved via `self.get_neighbors()`.
     """
     def __init__(self, csp, name):
         BaseVariable.__init__(self, csp, name)

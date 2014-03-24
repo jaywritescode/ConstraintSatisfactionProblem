@@ -45,7 +45,7 @@ class ConstraintSatisfactionProblem:
             return self
 
         current_var = self.select_unassigned_variable()
-        current_var.conflict_set = {n for n in current_var.get_neighbors() if n.value is not None}
+        current_var.conflict_set = {n for n in current_var.neighbors if n.value is not None}
 
         for value in current_var.ordered_domain():
             # Assign a value to the current variable.
@@ -123,7 +123,7 @@ class ConstraintSatisfactionProblem:
                 else:
                     removed[variable] = inconsistent_values
 
-                for neighbor in variable.get_neighbors():
+                for neighbor in variable.neighbors:
                     for cst in find_constraints(variable, neighbor):
                         if (neighbor, cst) not in queue:
                             queue.append((neighbor, cst))
@@ -148,8 +148,8 @@ class ConstraintSatisfactionProblem:
             if not choice or len(var.domain) < len(choice.domain):
                 choice = var
             elif len(var.domain) == len(choice.domain):
-                if len([x for x in var.get_neighbors() if not x.value]) > len(
-                        [x for x in choice.get_neighbors() if not x.value]):
+                if len([x for x in var.neighbors if not x.value]) > len(
+                        [x for x in choice.neighbors if not x.value]):
                     choice = var
         return choice
 
@@ -204,21 +204,22 @@ class BaseVariable:
         self.domain = None
         self.value = None
         self.constraints = set()
-        self.neighbors = None
+        self._neighbors = None
         self.aux = aux
 
-    def get_neighbors(self):
+    @property
+    def neighbors(self):
         """
         Get all the variables that share at least one constraint with this variable.
 
         Returns:
           A set of this variable's neighbors, not including self.
         """
-        if self.neighbors is None:
-            self.neighbors = set()
+        if self._neighbors is None:
+            self._neighbors = set()
             for c in self.constraints:
-                self.neighbors |= {v for v in c.variables if v is not self}
-        return self.neighbors
+                self._neighbors |= {v for v in c.variables if v is not self}
+        return self._neighbors
 
     def ordered_domain(self):
         """
