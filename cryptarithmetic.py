@@ -23,23 +23,26 @@ class Cryptarithmetic(ConstraintSatisfactionProblem):
         self.puzzle = puzzle
         match = re.match('(\w+)\s*\+\s*(\w+)\s*=\s*(\w+)', puzzle)
         if match:
-            (addend1, addend2, sum) = match.groups()
+            (addend1, addend2, theSum) = match.groups()
         else:
             raise InvalidPuzzleException()
+
+        m = max(len(theSum), len(addend2) + 2)
+        self.puzzle = addend1.rjust(m) + "\n" + ("+ " + addend2).rjust(m) + "\n" + ('-' * m) + "\n" + theSum.rjust(m)
 
         # Create a map: letter -> variable. Then create auxiliary
         # variables and add them to the map.
         self.variables = {char: CryptarithmeticVariable(self, char) for char in puzzle if str.isalpha(char)}
         if len(self.variables) > 10:
             raise InvalidPuzzleException()
-        for i in (addend1, addend2, sum):
+        for i in (addend1, addend2, theSum):
             self.variables[i[0]].domain.discard(0)
-        for i in range(1, len(sum)):
+        for i in range(1, len(theSum)):
             name = 'aux' + str(i)
             self.variables[name] = CryptarithmeticVariable(self, name, aux=True)
 
         # Create the constraints.
-        for i in range(1, len(sum) + 1):
+        for i in range(1, len(theSum) + 1):
             left = list()
             if 'aux' + str(i - 1) in self.variables:
                 left.append(self.variables['aux' + str(i - 1)])
@@ -47,18 +50,18 @@ class Cryptarithmetic(ConstraintSatisfactionProblem):
                 left.append(self.variables[addend1[-i]])
             if i <= len(addend2):
                 left.append(self.variables[addend2[-i]])
-            right = [self.variables[sum[-i]]]
+            right = [self.variables[theSum[-i]]]
             if 'aux' + str(i) in self.variables:
                 right.append(self.variables['aux' + str(i)])
             self.constraints.add(SumConstraint(left, right))
 
         self.constraints.add(AllDifferentConstraint([var for var in self.variables.values() if not var.aux]))
 
-    def print(self):
-        print(self.puzzle)
-        for var in self.variables.values():
-            if not var.aux:
-                print("%s: %s" % (var.name, var.value))
+    def __str__(self):
+        p = self.puzzle[:]
+        for letter in self.variables:
+            p = p.replace(letter, str(self.variables[letter].value))
+        return self.puzzle + "\n\n" + p
 
 
 class InvalidPuzzleException(Exception): pass
@@ -173,20 +176,28 @@ class AllDifferentConstraint(BaseConstraint):
 if __name__ == '__main__':
     c = Cryptarithmetic("send + more = money")
     c.solve()
-    c.print()
+    print(c)
+
+    print("\n" + ("-" * 40) + "\n")
 
     c = Cryptarithmetic("cross + roads = danger")
     c.solve()
-    c.print()
+    print(c)
+
+    print("\n" + ("-" * 40) + "\n")
 
     c = Cryptarithmetic("use + less = kiddy")
     c.solve()
-    c.print()
+    print(c)
+
+    print("\n" + ("-" * 40) + "\n")
 
     c = Cryptarithmetic("green + orange = colors")
     c.solve()
-    c.print()
+    print(c)
+
+    print("\n" + ("-" * 40) + "\n")
 
     c = Cryptarithmetic("taurus + pisces = scorpio")
     c.solve()
-    c.print()
+    print(c)
