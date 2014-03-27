@@ -10,6 +10,8 @@ class ConstraintSatisfactionProblem:
     Attributes:
       variables (dict): a mapping of variable names -> variable objects
       constraints (set): the set of the problem's constraints
+      is_disjoint_constraints: if the csp is such that any two variables
+        uniquely identify a constraint, set this to True for optimizations
     """
     def __init__(self):
         """
@@ -19,6 +21,7 @@ class ConstraintSatisfactionProblem:
         """
         self.variables = dict()
         self.constraints = set()
+        self.is_disjoint_constraints = False
 
     def solve(self):
         """
@@ -57,7 +60,7 @@ class ConstraintSatisfactionProblem:
             current_var.domain = [value]
 
             # Make the variables' domains arc-consistent.
-            ac3_changes = self.ac3()
+            ac3_changes = self.ac3(current_var)
             for (key, removed_values) in ac3_changes.items():
                 if key is current_var:
                     reduced_domains[key].update(ac3_changes[key])
@@ -90,7 +93,7 @@ class ConstraintSatisfactionProblem:
 
         return current_var.conflict_set
 
-    def ac3(self, is_disjoint_constraints=True):
+    def ac3(self, variable=None):
         """
         AC-3 domain reduction algorithm.
 
@@ -107,10 +110,10 @@ class ConstraintSatisfactionProblem:
         queue = deque()
 
         find_constraints = (BaseVariable.find_constraints_between
-                            if is_disjoint_constraints
+                            if self.is_disjoint_constraints
                             else BaseVariable.find_constraint_between)
 
-        for c in self.constraints:
+        for c in (self.constraints if variable is None else variable.constraints):
             queue.extend((vi, c) for vi in c.get_variables() if vi.value is None)
 
         removed = dict()
