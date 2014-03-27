@@ -39,6 +39,7 @@ class WordSquareCSP(ConstraintSatisfactionProblem):
             False
         """
         ConstraintSatisfactionProblem.__init__(self)
+        self.is_disjoint_constraints = True
         self.size = size
 
         self.letters_count = Counter()
@@ -63,13 +64,15 @@ class WordSquareCSP(ConstraintSatisfactionProblem):
         if diag:
             self.constraints.add(WordSquareConstraint({self.variables[(i, i)] for i in range(size)}))
 
-    def print(self):
-        i = 0
-        for var_name in sorted(list(self.variables.keys())):
-            print(' ' if not self.variables[var_name].value else self.variables[var_name].value, end='')
-            i += 1
-            if i % self.size == 0:
-                print("")
+    def __str__(self):
+        L = list(' ' * (self.size * self.size))
+        for var_name in self.variables:
+            if self.variables[var_name].value:
+                L[var_name[0] * self.size + var_name[1]] = self.variables[var_name].value
+        M = list()
+        for i in range(0, len(L), self.size):
+            M.extend(L[i:i + self.size] + ["\n"])
+        return ''.join(M)
 
 
 class WordSquareVariable(BaseVariable):
@@ -170,4 +173,4 @@ class WordSquareConstraint(BaseConstraint):
 if __name__ == '__main__':
     wordsquare = WordSquare('resources/words.txt')
     puzzle = wordsquare.csp(5, True)
-    puzzle.solve().print()
+    print(puzzle.solve())
