@@ -1,5 +1,3 @@
-__author__ = 'jayharris'
-
 from csp import *
 
 from collections import Counter

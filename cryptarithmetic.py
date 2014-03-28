@@ -1,4 +1,6 @@
-__author__ = 'Jay Harris'
+"""
+This module solves (certain types of) cryptarithmetic problems.
+"""
 
 from csp import *
 
@@ -8,14 +10,21 @@ import re
 
 class Cryptarithmetic(ConstraintSatisfactionProblem):
     """
-    Technically, it's a cryptarithmetic solver.
+    The cryptarithmetic solver.
+
+    This one only solves decimal domain puzzles, and only puzzles with two
+    addends and a sum.
     """
     def __init__(self, puzzle):
         """
         Constructor.
 
         Args:
-          puzzle (str): a cryptarithmetic with two addends and a sum
+            puzzle (str): a cryptarithmetic with two addends and a sum, on one
+                line
+
+        Raises:
+            InvalidPuzzleException: The puzzle is invalid.
         """
         ConstraintSatisfactionProblem.__init__(self)
 
@@ -28,11 +37,13 @@ class Cryptarithmetic(ConstraintSatisfactionProblem):
             raise InvalidPuzzleException()
 
         m = max(len(the_sum), len(addend2) + 2)
-        self.puzzle = addend1.rjust(m) + "\n" + ("+ " + addend2).rjust(m) + "\n" + ('-' * m) + "\n" + the_sum.rjust(m)
+        self.puzzle = ''.join[addend1.rjust(m), "\n", ("+ " + addend2).rjust(m),
+                "\n", '-' * m, "\n", the_sum.rjust(m)]
 
         # Create a map: letter -> variable. Then create auxiliary
         # variables and add them to the map.
-        self.variables = {char: CryptarithmeticVariable(self, char) for char in puzzle if str.isalpha(char)}
+        self.variables = {char: CryptarithmeticVariable(self, char)
+                          for char in puzzle if str.isalpha(char)}
         if len(self.variables) > 10:
             raise InvalidPuzzleException()
         for i in (addend1, addend2, the_sum):
@@ -55,7 +66,8 @@ class Cryptarithmetic(ConstraintSatisfactionProblem):
                 right.append(self.variables['aux' + str(i)])
             self.constraints.add(SumConstraint(left, right))
 
-        self.constraints.add(AllDifferentConstraint([var for var in self.variables.values() if not var.aux]))
+        self.constraints.add(AllDifferentConstraint(
+                [var for var in self.variables.values() if not var.aux]))
 
     def __str__(self):
         p = self.puzzle[:]
@@ -120,8 +132,11 @@ class SumConstraint(BaseConstraint):
     class FoundException(Exception): pass
 
     def __repr__(self):
-        return "[Constraint] %s = %s" % (' + '.join(var.name for var in self.left_vars),
-            "%s %s" % (self.right_vars[0].name, '+ 10 * ' + self.right_vars[1].name if len(self.right_vars) == 2 else ''))
+        return ' '.join["[Constraint",
+                        ' + '.join(var.name for var in self.left_vars), "=",
+                        self.right_vars[0].name, '+ 10 *',
+                        self.right_vars[1].name
+                            if len(self.right_vars) == 2 else '']
 
 
 class AllDifferentConstraint(BaseConstraint):
@@ -132,7 +147,8 @@ class AllDifferentConstraint(BaseConstraint):
         if variable.value is not None:
             return True
 
-        if assignment in [var.value for var in self.variables if var.value is not None]:
+        if assignment in [var.value for var in self.variables
+                          if var.value is not None]:
             return False
 
         def remove_if_exists(target, collection):
@@ -141,7 +157,8 @@ class AllDifferentConstraint(BaseConstraint):
             except (KeyError, ValueError):
                 pass
 
-        tmp_vars_domains = {var: var.domain.copy() for var in self.variables if not var.value and var is not variable}
+        tmp_vars_domains = {var: var.domain.copy() for var in self.variables
+                            if not var.value and var is not variable}
 
         # Remove assignment from all the variables' temp domains
         for domain in tmp_vars_domains.values():
@@ -151,7 +168,8 @@ class AllDifferentConstraint(BaseConstraint):
         # satisfiable.
         while all(tmp_vars_domains.values()):
             # If we have any singletons, we need to process the domains
-            singletons = [x for x in tmp_vars_domains.keys() if len(tmp_vars_domains[x]) == 1]
+            singletons = [x for x in tmp_vars_domains.keys()
+                          if len(tmp_vars_domains[x]) == 1]
             if singletons:
                 d = list(singletons[0].domain)[0]
                 for s in tmp_vars_domains.values():
