@@ -44,7 +44,9 @@ class ConstraintSatisfactionProblem:
             depth (int): The current depth of the search tree
 
         Returns:
-            self on success or the local conflict set on a branch fail.
+            self on success or the local conflict set on a branch fail. This
+                implies that the method returns something falsy if there is no
+                solution.
         """
         if self.is_solved():
             return self

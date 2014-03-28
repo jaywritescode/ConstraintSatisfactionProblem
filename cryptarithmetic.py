@@ -185,8 +185,10 @@ class AllDifferentConstraint(BaseConstraint):
 
 def main(puzzle):
     c = Cryptarithmetic(puzzle)
-    c.solve()
-    print(c)
+    if c.solve():
+        print(c)
+    else:
+        print("No solution.")
 
 if __name__ == '__main__':
     import argparse
