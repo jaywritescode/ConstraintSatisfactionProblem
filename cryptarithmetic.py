@@ -37,8 +37,8 @@ class Cryptarithmetic(ConstraintSatisfactionProblem):
             raise InvalidPuzzleException()
 
         m = max(len(the_sum), len(addend2) + 2)
-        self.puzzle = ''.join[addend1.rjust(m), "\n", ("+ " + addend2).rjust(m),
-                "\n", '-' * m, "\n", the_sum.rjust(m)]
+        self.puzzle = ''.join([addend1.rjust(m), "\n", ("+ " + addend2).rjust(m),
+                "\n", '-' * m, "\n", the_sum.rjust(m)])
 
         # Create a map: letter -> variable. Then create auxiliary
         # variables and add them to the map.
@@ -183,32 +183,20 @@ class AllDifferentConstraint(BaseConstraint):
     def __repr__(self):
         return "[Constraint] All different: {%s}" % self.variables
 
+def main(puzzle):
+    c = Cryptarithmetic(puzzle)
+    c.solve()
+    print(c)
 
 if __name__ == '__main__':
-    c = Cryptarithmetic("send + more = money")
-    c.solve()
-    print(c)
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("puzzle", help="Enter the cryptarithmetic in double quotes, on one line")
+    args = parser.parse_args()
+    main(args.puzzle)
 
-    print("\n" + ("-" * 40) + "\n")
-
-    c = Cryptarithmetic("cross + roads = danger")
-    c.solve()
-    print(c)
-
-    print("\n" + ("-" * 40) + "\n")
-
-    c = Cryptarithmetic("use + less = kiddy")
-    c.solve()
-    print(c)
-
-    print("\n" + ("-" * 40) + "\n")
-
-    c = Cryptarithmetic("green + orange = colors")
-    c.solve()
-    print(c)
-
-    print("\n" + ("-" * 40) + "\n")
-
-    c = Cryptarithmetic("taurus + pisces = scorpio")
-    c.solve()
-    print(c)
+    # send + more = money => 9567 + 1085 = 10652
+    # cross + roads = danger => 96233 + 62513 = 158746
+    # use + less = kiddy => 876 + 9677 = 10553
+    # green + orange = colors => 83446 + 135684 = 219130
+    # taurus + pisces = scorpio => 859091 + 461371 = 1320462
