@@ -116,13 +116,18 @@ class ConstraintSatisfactionProblem:
                             if self.is_disjoint_constraints
                             else BaseVariable.find_constraint_between)
 
-        for c in (self.constraints if variable is None else variable.constraints):
-            queue.extend((vi, c) for vi in c.get_variables() if vi.value is None)
+        for c in (self.constraints
+                  if variable is None
+                  else variable.constraints):
+            queue.extend((vi, c) for vi in c.get_variables()
+                         if vi.value is None)
 
         removed = dict()
         while queue:
             (variable, constraint) = queue.popleft()
-            inconsistent_values = self.remove_inconsistent_values(variable, constraint)
+            inconsistent_values = self.remove_inconsistent_values(
+                    variable, constraint)
+
             if inconsistent_values:
                 if variable in removed:
                     removed[variable].update(inconsistent_values)
@@ -146,7 +151,8 @@ class ConstraintSatisfactionProblem:
         Returns:
             The next variable to examine.
         """
-        the_variables = [var for var in self.variables.values() if var.value is None]
+        the_variables = [var for var in self.variables.values()
+                         if var.value is None]
         assert(len(the_variables))
 
         choice = None
@@ -186,7 +192,8 @@ class ConstraintSatisfactionProblem:
             True iff for all variables V in self.variable, V is assigned
                 a non-None value or V is an auxiliary variable.
         """
-        return all(var.value is not None for var in self.variables.values() if not var.aux)
+        return all(var.value is not None for var in self.variables.values()
+                   if not var.aux)
 
 
 class BaseVariable:
@@ -280,7 +287,8 @@ class BaseVariable:
         return self.name == other.name
 
     def __repr__(self):
-        return "[Variable] %s => %s" % (self.name, self.value if self.value is not None else self.domain)
+        return "[Variable] {} => {}".format(
+            self.name, self.value if self.value is not None else self.domain)
 
 
 class BaseConstraint:
