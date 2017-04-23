@@ -7,7 +7,7 @@ class WordSquare:
     """
     Find a word square of the given size from the given dictionary.
     """
-    
+
     alphabet = list('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
     def __init__(self, wordsfile):
@@ -17,7 +17,7 @@ class WordSquare:
         Arguments:
         wordsfile -- the path to a text file of valid words for this
             word square, with one word on a line
-        """                
+        """
         self.words = (str.upper(w.rstrip()) for w in open(wordsfile) if str.isalpha(w.rstrip()))
 
     def csp(self, size, diag=False):
