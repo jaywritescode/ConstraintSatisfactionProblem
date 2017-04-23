@@ -2,8 +2,8 @@ from distutils.core import setup
 
 setup(
     name='ConstraintSatisfactionProblem',
-    version='',
-    packages=[''],
+    version='0.1.0',
+    py_modules=['csp'],
     url='https://github.com/jaywritescode/ConstraintSatisfactionProblem',
     license='MIT',
     author='jay harris',
