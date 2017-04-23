@@ -196,9 +196,3 @@ if __name__ == '__main__':
     parser.add_argument("puzzle", help="Enter the cryptarithmetic in double quotes, on one line")
     args = parser.parse_args()
     main(args.puzzle)
-
-    # send + more = money => 9567 + 1085 = 10652
-    # cross + roads = danger => 96233 + 62513 = 158746
-    # use + less = kiddy => 876 + 9677 = 10553
-    # green + orange = colors => 83446 + 135684 = 219130
-    # taurus + pisces = scorpio => 859091 + 461371 = 1320462
