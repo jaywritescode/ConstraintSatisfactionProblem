@@ -36,7 +36,7 @@ def australia():
     return australia
 
 
-class MyTestCase(unittest.TestCase):
+class ConstraintSatisfactionProblemTestCase(unittest.TestCase):
     def test_solve(self):
         solution = australia().solve()
         self.assertTrue(all(variable.value for variable in solution.variables.values()))
