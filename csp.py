@@ -80,7 +80,7 @@ class ConstraintSatisfactionProblem:
             reduced_domains.clear()
             current_var.value = None
 
-            # If the current varaible isn't in the conflict set from recursion
+            # If the current variable isn't in the conflict set from recursion
             # depth + 1, then no value will satisfy this constraint. So
             # backtrack and pass the conflict set up to the next stack frame.
             if current_var not in result and depth > 0:
