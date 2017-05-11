@@ -51,5 +51,6 @@ class BaseVariableTestCase(unittest.TestCase):
         self.assertSetEqual(set(), csp.variables['T'].neighbors)
         self.assertSetEqual({csp.variables[x] for x in ['WA', 'SA', 'Q']}, csp.variables['NT'].neighbors)
 
+
 if __name__ == '__main__':
     unittest.main()

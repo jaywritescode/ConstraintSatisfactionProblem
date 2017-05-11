@@ -56,12 +56,11 @@ class ConstraintSatisfactionProblem:
                                     if n.value is not None}
 
         for value in current_var.ordered_domain():
-            current_var.value = value
+            self._assign_value_to_variable(current_var, value)
 
             # Record the values we're removing from each variable's domain.
             reduced_domains = {current_var: {x for x in current_var.domain
                                              if x is not value}}
-            current_var.domain = [value]
 
             ac3_changes = self._ac3(current_var)
             for (key, removed_values) in ac3_changes.items():
@@ -94,6 +93,22 @@ class ConstraintSatisfactionProblem:
                     current_var.conflict_set.add(e)
 
         return current_var.conflict_set
+
+    @staticmethod
+    def _assign_value_to_variable(variable, value):
+        """
+        Assigns `value` to `variable`, or raises an error if `value` is not in
+        `variable's` domain.
+
+        Args:
+            variable: The variable target of the assignment.
+            value: The value we're assigning to the variable.
+        """
+        if value not in variable.domain:
+            raise ValueError
+
+        variable.value = value
+        variable.domain = [value]
 
     def _ac3(self, variable=None):
         """
