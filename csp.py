@@ -33,10 +33,10 @@ class ConstraintSatisfactionProblem:
             The CSP with values assigned to all its non-auxiliary variables,
             or None if there is no solution.
         """
-        self.ac3()
-        return self.recursive_backtracking(0)
+        self._ac3()
+        return self._recursive_backtracking(0)
 
-    def recursive_backtracking(self, depth):
+    def _recursive_backtracking(self, depth):
         """
         Backtracking search.
 
@@ -51,7 +51,7 @@ class ConstraintSatisfactionProblem:
         if self.is_solved():
             return self
 
-        current_var = self.select_unassigned_variable()
+        current_var = self._select_unassigned_variable()
         current_var.conflict_set = {n for n in current_var.neighbors
                                     if n.value is not None}
 
@@ -63,14 +63,14 @@ class ConstraintSatisfactionProblem:
                                              if x is not value}}
             current_var.domain = [value]
 
-            ac3_changes = self.ac3(current_var)
+            ac3_changes = self._ac3(current_var)
             for (key, removed_values) in ac3_changes.items():
                 if key is current_var:
                     reduced_domains[key].update(ac3_changes[key])
                 else:
                     reduced_domains[key] = removed_values
 
-            result = self.recursive_backtracking(depth + 1)
+            result = self._recursive_backtracking(depth + 1)
             if result is self:
                 return self
 
@@ -95,7 +95,7 @@ class ConstraintSatisfactionProblem:
 
         return current_var.conflict_set
 
-    def ac3(self, variable=None):
+    def _ac3(self, variable=None):
         """
         AC-3 domain reduction algorithm.
 
@@ -127,7 +127,7 @@ class ConstraintSatisfactionProblem:
         removed = dict()
         while queue:
             (variable, constraint) = queue.popleft()
-            inconsistent_values = self.remove_inconsistent_values(
+            inconsistent_values = self._remove_inconsistent_values(
                     variable, constraint)
 
             if inconsistent_values:
@@ -142,7 +142,7 @@ class ConstraintSatisfactionProblem:
                             queue.append((neighbor, cst))
         return removed
 
-    def select_unassigned_variable(self):
+    def _select_unassigned_variable(self):
         """
         Choose the next variable to examine.
 
@@ -167,7 +167,8 @@ class ConstraintSatisfactionProblem:
                     choice = var
         return choice
 
-    def remove_inconsistent_values(self, variable, constraint):
+    @staticmethod
+    def _remove_inconsistent_values(variable, constraint):
         """
         Remove values from variable.domain that are inconsistent with constraint.
 
@@ -194,8 +195,7 @@ class ConstraintSatisfactionProblem:
             True iff for all variables V in self.variable, V is assigned
                 a non-None value or V is an auxiliary variable.
         """
-        return all(var.value is not None for var in self.variables.values()
-                   if not var.aux)
+        return all(var.value is not None for var in self.variables.values() if not var.aux)
 
 
 class BaseVariable:
