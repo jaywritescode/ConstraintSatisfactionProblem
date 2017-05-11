@@ -307,7 +307,7 @@ class BaseConstraint:
         Args:
             variables: An iterable of variables this constraint covers
         """
-        self.variables = variables
+        self.variables = list(variables)
         for variable in self.variables:
             variable.constraints.add(self)
 
