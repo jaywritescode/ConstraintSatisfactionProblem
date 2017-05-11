@@ -45,5 +45,11 @@ class ConstraintSatisfactionProblemTestCase(unittest.TestCase):
             self.assertNotEqual(vars[0].value, vars[1].value, "Failed: {}".format(solution.variables))
 
 
+class BaseVariableTestCase(unittest.TestCase):
+    def test_neighbors(self):
+        csp = australia()
+        self.assertSetEqual(set(), csp.variables['T'].neighbors)
+        self.assertSetEqual({csp.variables[x] for x in ['WA', 'SA', 'Q']}, csp.variables['NT'].neighbors)
+
 if __name__ == '__main__':
     unittest.main()
