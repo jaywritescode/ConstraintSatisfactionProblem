@@ -42,7 +42,7 @@ class ConstraintSatisfactionProblemTestCase(unittest.TestCase):
         self.assertTrue(all(variable.value for variable in solution.variables.values()))
         for pair in australia_neighbors:
             vars = [solution.variables.get(p) for p in pair]
-            self.assertNotEqual(vars[0].value, vars[1].value)
+            self.assertNotEqual(vars[0].value, vars[1].value, "Failed: {}".format(solution.variables))
 
 
 if __name__ == '__main__':
