@@ -212,6 +212,9 @@ class BaseVariable:
         aux: An auxiliary variable isn't part of the problem. That is,
             the problem can be said to be solved even if this variable's
             value is still None.
+        
+    Note: If `v` is a BaseVariable and `k` is not `None`, then `v.value == k` implies
+    `list(v.domain) == [k]`.
     """
     def __init__(self, csp, name, aux=False):
         self.csp = csp
