@@ -18,20 +18,12 @@ def australia():
             csp.BaseVariable.__init__(self, australia, name)
             self.domain = {'red', 'blue', 'green'}
 
-    class NotEqualConstraint(csp.BaseConstraint):
-        def is_satisfiable(self, variable, assignment):
-            return any(value != assignment for value in self.opposite_variable(variable).domain)
-
-        def opposite_variable(self, variable):
-            if variable in self.variables:
-                return next(n for n in self.variables if n is not variable)
-
     for name in australia_names:
         australia.variables[name] = AustraliaVariable(name)
 
     for constraint in australia_neighbors:
         vars = map(lambda t: australia.variables[t], constraint)
-        australia.constraints.add(NotEqualConstraint(vars))
+        australia.constraints.add(csp.AllDifferentConstraint(vars))
 
     return australia
 

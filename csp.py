@@ -343,3 +343,18 @@ class BaseConstraint:
             A list of variables this constraint covers.
         """
         return self.variables
+
+
+class AllDifferentConstraint(BaseConstraint):
+    """
+    A constraint that is satisfied iff all the variables it covers are assigned
+    different values.
+    """
+    def is_satisfiable(self, variable, assignment):
+        if assignment not in variable.domain:
+            return False
+
+        return all(k is variable or any(d != assignment for d in k.domain) for k in self.variables)
+
+    def __repr__(self):
+        return "[AllDifferentConstraint]: {}".format(self.variables)

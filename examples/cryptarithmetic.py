@@ -81,7 +81,6 @@ class InvalidPuzzleException(Exception):
 
 
 class CryptarithmeticVariable(BaseVariable):
-
     def __init__(self, csp, name, aux=False):
         BaseVariable.__init__(self, csp, name, aux)
         self.domain = set(range(10)) if not self.aux else set(range(2))
@@ -138,50 +137,6 @@ class SumConstraint(BaseConstraint):
                         self.right_vars[1].name
                             if len(self.right_vars) == 2 else '']
 
-
-class AllDifferentConstraint(BaseConstraint):
-    def __init__(self, variables):
-        BaseConstraint.__init__(self, variables)
-
-    def is_satisfiable(self, variable, assignment):
-        if variable.value is not None:
-            return True
-
-        if assignment in [var.value for var in self.variables
-                          if var.value is not None]:
-            return False
-
-        def remove_if_exists(target, collection):
-            try:
-                collection.remove(target)
-            except (KeyError, ValueError):
-                pass
-
-        tmp_vars_domains = {var: var.domain.copy() for var in self.variables
-                            if not var.value and var is not variable}
-
-        # Remove assignment from all the variables' temp domains
-        for domain in tmp_vars_domains.values():
-            remove_if_exists(assignment, domain)
-
-        # If any temp domain is empty, then this assignment is not
-        # satisfiable.
-        while all(tmp_vars_domains.values()):
-            # If we have any singletons, we need to process the domains
-            singletons = [x for x in tmp_vars_domains.keys()
-                          if len(tmp_vars_domains[x]) == 1]
-            if singletons:
-                d = list(singletons[0].domain)[0]
-                for s in tmp_vars_domains.values():
-                    remove_if_exists(d, s)
-                del tmp_vars_domains[singletons[0]]
-            else:
-                return True
-
-        return False
-
-    def __repr__(self):
-        return "[Constraint] All different: {%s}" % self.variables
 
 def main(puzzle):
     c = Cryptarithmetic(puzzle)
